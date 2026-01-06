@@ -51,22 +51,6 @@
             font-style: italic;
         }
 
-        /* Hero Image */
-        .hero-image-container {
-            max-width: 1000px;
-            margin: -100px auto 60px; /* Negative margin to pull up into hero */
-            padding: 0 20px;
-            position: relative;
-            z-index: 10;
-        }
-        .hero-image {
-            width: 100%;
-            border-radius: 12px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            background-color: white;
-            display: block;
-        }
-
         /* Footer */
         footer {
             background-color: #1e293b;
@@ -172,6 +156,81 @@
             filter: grayscale(100%);
             opacity: 0.6;
         }
+
+        /* Image Comparison Slider */
+        .slider-frame {
+            position: relative;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            cursor: ew-resize;
+            background-color: white; /* Prevent transparent gaps */
+        }
+
+        .hero-image-container {
+            max-width: 1000px;
+            margin: -100px auto 60px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-image {
+            width: 100%;
+            display: block;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .overlay-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+            z-index: 2;
+        }
+        
+        .base-image {
+            position: relative;
+            z-index: 1;
+        }
+
+        .slider-handle {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background: white;
+            z-index: 3;
+            pointer-events: none; /* Let events fall through to container */
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        .slider-handle::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .slider-handle::after {
+            content: "↔";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
@@ -183,8 +242,58 @@
     </div>
     
     <div class="hero-image-container">
-        <img src="product.png" alt="KrmPesan Dashboard" class="hero-image">
+        <div class="slider-frame" id="comparison-slider">
+            <img src="product.png" alt="KrmPesan Dashboard Light" class="hero-image base-image">
+            <img src="product-dark.png" alt="KrmPesan Dashboard Dark" class="hero-image overlay-image" id="overlay-image">
+            <div class="slider-handle" id="slider-handle"></div>
+        </div>
     </div>
+
+    <script>
+        const container = document.getElementById('comparison-slider');
+        const overlay = document.getElementById('overlay-image');
+        const handle = document.getElementById('slider-handle');
+
+        let isDragging = false;
+
+        function updateSlider(x) {
+            const rect = container.getBoundingClientRect();
+            let pos = x - rect.left;
+            
+            // Boundary checks
+            if (pos < 0) pos = 0;
+            if (pos > rect.width) pos = rect.width;
+
+            const percentage = (pos / rect.width) * 100;
+            
+            // Update Clip Path (Reveal Left side)
+            overlay.style.clipPath = `polygon(0 0, ${percentage}% 0, ${percentage}% 100%, 0 100%)`;
+            
+            // Update Handle Position
+            handle.style.left = `${percentage}%`;
+        }
+
+        // Mouse Events
+        container.addEventListener('mousedown', () => isDragging = true);
+        window.addEventListener('mouseup', () => isDragging = false);
+        container.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            updateSlider(e.clientX);
+        });
+        
+        // Touch Events
+        container.addEventListener('touchstart', () => isDragging = true);
+        window.addEventListener('touchend', () => isDragging = false);
+        container.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            updateSlider(e.touches[0].clientX);
+        });
+
+        // Click to jump
+        container.addEventListener('click', (e) => {
+            updateSlider(e.clientX);
+        });
+    </script>
 
     <div class="container">
         <!-- Our Focus Section -->
