@@ -123,10 +123,28 @@
         .dept-card {
             border-left: 5px solid var(--primary-color);
             text-align: left;
+            display: flex;
+            flex-direction: column;
         }
-        .dept-card h3 {
+        .dept-card .tag {
+            align-self: flex-start;
+            margin-bottom: 12px;
+        }
+        .dept-list {
+            list-style: none;
+            margin: 0;
+            padding-left: 0;
             color: var(--text-color);
-            margin-bottom: 5px;
+            font-size: 0.95em;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .dept-list li {
+            padding: 3px 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .dept-list li:last-child {
+            border-bottom: none;
         }
         .tag {
             display: inline-block;
@@ -320,20 +338,26 @@
         <h2 class="section-title">Departments</h2>
         <div class="departments-list">
             <div class="card dept-card">
-                <h3>Daar el-Qolam</h3>
-                <h3>Fakultas Teknik UPB</h3>
                 <span class="tag">Education</span>
+                <ul class="dept-list">
+                    <li>Daar el-Qolam</li>
+                    <li>Fakultas Teknik UPB</li>
+                </ul>
             </div>
             <div class="card dept-card">
-                <h3>OTPWiz</h3>
                 <span class="tag">Security</span>
+                <ul class="dept-list">
+                    <li>OTPWiz</li>
+                </ul>
             </div>
             <div class="card dept-card">
-                <h3>UDD Lumajang</h3>
-                <h3>UDD PMI Kab Tulungagung</h3>
-                <h3>UDD PMI PURWOREJO</h3>
-                <h3>UDD PMI Kota Magelang</h3>
                 <span class="tag">Healthcare</span>
+                <ul class="dept-list">
+                    <li>UDD Lumajang</li>
+                    <li>UDD PMI Kab Tulungagung</li>
+                    <li>UDD PMI PURWOREJO</li>
+                    <li>UDD PMI Kota Magelang</li>
+                </ul>
             </div>
         </div>
 
